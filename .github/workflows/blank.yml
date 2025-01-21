@@ -23,8 +23,6 @@ jobs:
         with:
           python-version: '3.x'
 
-        run: pip install -r requirements.txt
-
       - name: Generate Index
         run: python wiki/generate_index.py wiki
 
