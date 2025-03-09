@@ -1,61 +1,67 @@
 import json
 import os
+import re
 
-# キーワード辞書の読み込み
-def load_keywords(file_path):
-    with open(file_path, "r", encoding="utf-8") as f:
+WIKI_PATH = "wiki"
+INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
+SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
+KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
+
+def load_keywords():
+    """キーワード辞書の読み込み"""
+    if not os.path.exists(KEYWORDS_FILE):
+        print(f"Error: {KEYWORDS_FILE} が見つかりません")
+        return {}
+    with open(KEYWORDS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
-# カテゴライズ関数
 def categorize(title, keywords):
+    """タイトルをカテゴリに分類"""
     for category, words in keywords.items():
         if any(word.lower() in title.lower() for word in words):
             return category
     return "その他"
 
-# インデックス生成
-def generate_index(base_path, keywords):
-    index = {}
-    output_path = os.path.join(base_path, "INDEX.md")  # 出力先を明確に指定
+def extract_command_references():
+    """_Sidebar.md から 'コマンドリファレンス' の一覧を抽出"""
+    if not os.path.exists(SIDEBAR_FILE):
+        print(f"Error: {SIDEBAR_FILE} が見つかりません")
+        return []
 
-    # デバッグ出力: ファイル生成場所を確認
-    print(f"Generating INDEX.md at: {output_path}")
+    with open(SIDEBAR_FILE, "r", encoding="utf-8") as f:
+        content = f.readlines()
 
-    # ベースパスが存在するか確認
-    if not os.path.exists(base_path):
-        print(f"Error: Base path does not exist: {base_path}")
-        exit(1)
+    command_references = []
+    inside_section = False
 
-    for file in os.listdir(base_path):
-        if file.endswith(".md"):
-            title = file.replace(".md", "")
-            category = categorize(title, keywords)
-            index.setdefault(category, []).append(title)
+    for line in content:
+        if "## コマンドリファレンス" in line:  # セクションの開始
+            inside_section = True
+            continue
+        if inside_section:
+            if line.startswith("## "):  # 次のセクションに入ったら終了
+                break
+            match = re.search(r"\[\[(.*?)\]\]", line)  # [[ページ名]] のリンクを抽出
+            if match:
+                command_references.append(match.group(1))
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        for category, pages in sorted(index.items()):
-            f.write(f"## {category}\n")
-            for page in sorted(pages):
-                f.write(f"- [{page}]({page.replace(' ', '%20')}.md)\n")
+    return command_references
 
-# メイン処理（スクリプトのテスト実行用）
+def generate_index():
+    """INDEX.md を生成"""
+    keywords = load_keywords()
+    command_refs = extract_command_references()
+
+    with open(INDEX_FILE, "w", encoding="utf-8") as f:
+        f.write("# コマンドリファレンス一覧\n\n")
+
+        if command_refs:
+            for ref in command_refs:
+                category = categorize(ref, keywords)
+                f.write(f"- [[{ref}]] ({category})\n")
+        else:
+            f.write("コマンドリファレンスが見つかりませんでした。\n")
+
 if __name__ == "__main__":
-    # 現在のスクリプトディレクトリを取得
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    base_path = script_dir  # 出力先ディレクトリをスクリプト実行ディレクトリに設定
-    keywords_file = os.path.join(script_dir, "keywords.json")  # キーワード辞書ファイルの絶対パス
-
-    # デバッグ出力: 実行ディレクトリと参照するファイルのパスを確認
-    print(f"Script directory: {script_dir}")
-    print(f"Base path: {base_path}")
-    print(f"Keywords file: {keywords_file}")
-
-    # キーワード辞書をロード
-    if not os.path.exists(keywords_file):
-        print(f"Error: Keywords file not found at {keywords_file}")
-        exit(1)
-
-    keywords = load_keywords(keywords_file)
-
-    # インデックス生成
-    generate_index(base_path, keywords)
+    generate_index()
+    print(f"Generated {INDEX_FILE}")

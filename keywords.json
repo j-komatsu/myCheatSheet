@@ -1,10 +1,17 @@
 {
-    "Gitコマンド": ["Git", "branch", "commit", "push", "merge", "rebase", "clone", "pull", "fetch"],
-    "Linuxシステム": ["Linux", "shell", "bash", "command", "cron", "chmod", "chown", "grep", "awk", "sed", "systemctl"],
-    "プログラミング": ["Python", "Java", "JavaScript", "コード", "プログラム", "関数", "クラス", "オブジェクト", "ライブラリ", "モジュール"],
-    "データベース": ["SQL", "MySQL", "PostgreSQL", "MongoDB", "データ", "クエリ", "スキーマ", "テーブル", "カラム", "インデックス", "ビュー"],
-    "ネットワーク": ["TCP/IP", "HTTP", "HTTPS", "DNS", "プロトコル", "ポート", "ファイアウォール", "ロードバランサ", "VPN", "Ping"],
-    "クラウド": ["AWS", "Azure", "GCP", "クラウド", "コンテナ", "Kubernetes", "Docker", "Lambda", "EC2", "S3", "CloudFront"],
+    "Gitコマンド": ["Git", "branch", "commit", "push", "merge", "rebase", "clone", "pull", "fetch", "tag", "checkout", "log", "diff"],
+    "Linuxコマンド": ["Linux", "shell", "bash", "command", "cron", "chmod", "chown", "grep", "awk", "sed", "systemctl", "service", "ps", "top", "kill"],
+    "プログラミング言語": ["Python", "Java", "JavaScript", "C++", "C#", "Ruby", "Go", "PHP", "Swift", "Kotlin", "Rust"],
+    "フレームワーク": ["Spring Boot", "Django", "Flask", "Rails", "Express", "React", "Vue.js", "Angular", "Laravel"],
+    "データベース": ["SQL", "データ", "クエリ", "スキーマ", "テーブル", "カラム", "インデックス", "ビュー", "ER図"],
+    "RDBMS": ["MySQL", "PostgreSQL", "SQL Server", "Oracle", "SQLite"],
+    "NoSQL": ["MongoDB", "Redis", "Cassandra", "DynamoDB", "Firestore"],
+    "ネットワーク": ["TCP/IP", "HTTP", "HTTPS", "DNS", "プロトコル", "ポート", "ファイアウォール", "ロードバランサ", "VPN", "Ping", "Traceroute"],
+    "クラウドサービス": ["AWS", "Azure", "GCP", "クラウド", "コンテナ", "Docker", "Kubernetes"],
+    "AWS": ["EC2", "S3", "CloudFront", "IAM", "Lambda", "RDS", "DynamoDB", "VPC", "CloudWatch"],
+    "Azure": ["VM", "Blob Storage", "Azure Functions", "Azure AD", "AKS"],
+    "GCP": ["Compute Engine", "Cloud Storage", "BigQuery", "GKE", "Cloud Run"],
     "セキュリティ": ["暗号化", "SSL", "TLS", "ファイアウォール", "認証", "認可", "セキュリティグループ", "IAM", "脆弱性", "ペネトレーションテスト"],
+    "開発ツール": ["Docker", "Vagrant", "Ansible", "Terraform", "GitHub Actions", "Jenkins", "CI/CD"],
     "その他": []
 }
