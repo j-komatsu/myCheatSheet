@@ -44,7 +44,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/j-komatsu/myCheatSheet.wiki.git
           
           # •ÏX‚ª‚ ‚éê‡‚Ì‚İ commit & push
-          if [[ `git status --porcelain` ]]; then
+          if [[ -n "$(git status --porcelain)" ]]; then
             git add INDEX.md
             git commit -m "Update Wiki Index"
             git push origin HEAD
