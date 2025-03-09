@@ -23,8 +23,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+      - name: Install Dependencies (if any)
+         run: |
+    if [ -s requirements.txt ]; then pip install -r requirements.txt; else echo "No dependencies to install"; fi
 
       - name: Generate Index
         run: python wiki/generate_index.py wiki
