@@ -2,7 +2,7 @@ import os
 import re
 import json
 
-WIKI_PATH = "myCheatSheet.wiki"  # GitHub Wikiのディレクトリ
+WIKI_PATH = "wiki"
 SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
 INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
 KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
