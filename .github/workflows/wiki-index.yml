@@ -23,14 +23,13 @@ jobs:
         with:
           python-version: '3.x'
 
-- name: Install Dependencies (if any)
-  run: |
-    if [ -s requirements.txt ]; then 
-      pip install -r requirements.txt
-    else 
-      echo "No dependencies to install"
-    fi
-
+      - name: Install Dependencies (if any)  # ? インデントを修正
+        run: |
+          if [ -s requirements.txt ]; then 
+            pip install -r requirements.txt
+          else 
+            echo "No dependencies to install"
+          fi
 
       - name: Generate Index
         run: python wiki/generate_index.py wiki
@@ -43,6 +42,7 @@ jobs:
           git add INDEX.md
           git commit -m "Update Wiki Index"
           git push
+
       - name: Debug: Check file location
         run: |
           ls -R wiki  # wikiディレクトリ内を確認
