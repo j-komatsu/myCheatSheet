@@ -32,7 +32,7 @@ jobs:
           fi
 
       - name: Generate Index
-        run: python wiki/generate_index.py wiki
+        run: python generate_index.py wiki
 
       - name: Commit and Push Changes
         env:
