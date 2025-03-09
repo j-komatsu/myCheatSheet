@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Dependencies (if any)  # ✅ インデントを修正
+      - name: Install Dependencies (if any)
         run: |
           if [ -s requirements.txt ]; then 
             pip install -r requirements.txt
@@ -42,6 +42,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${MYAUTOWIKITOKEN}@github.com/j-komatsu/myCheatSheet.wiki.git
-          git add INDEX.md
-          git commit -m "Update Wiki Inde x"
-          git push origin HEAD
+          
+          # 変更がある場合のみ commit & push
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add INDEX.md
+            git commit -m "Update Wiki Index"
+            git push origin HEAD
+          else
+            echo "No changes to commit"
+          fi
