@@ -1,9 +1,8 @@
-import json
 import os
 import re
+import json
 
 WIKI_PATH = "wiki"
-INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
 SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
 KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
 
@@ -22,46 +21,54 @@ def categorize(title, keywords):
             return category
     return "その他"
 
-def extract_command_references():
-    """_Sidebar.md から 'コマンドリファレンス' の一覧を抽出"""
+def extract_sidebar():
+    """_Sidebar.md の内容を読み込む"""
     if not os.path.exists(SIDEBAR_FILE):
         print(f"Error: {SIDEBAR_FILE} が見つかりません")
         return []
 
     with open(SIDEBAR_FILE, "r", encoding="utf-8") as f:
-        content = f.readlines()
+        return f.readlines()
+
+def update_sidebar():
+    """_Sidebar.md の「コマンドリファレンス」セクションを更新"""
+    keywords = load_keywords()
+    lines = extract_sidebar()
 
     command_references = []
     inside_section = False
+    new_sidebar = []
 
-    for line in content:
-        if "## コマンドリファレンス" in line:  # セクションの開始
+    for line in lines:
+        if "## コマンドリファレンス" in line:  # セクション開始
             inside_section = True
+            new_sidebar.append(line)
             continue
         if inside_section:
             if line.startswith("## "):  # 次のセクションに入ったら終了
-                break
-            match = re.search(r"\[\[(.*?)\]\]", line)  # [[ページ名]] のリンクを抽出
-            if match:
-                command_references.append(match.group(1))
+                inside_section = False
+        if not inside_section:
+            new_sidebar.append(line)
 
-    return command_references
+    # 更新用のページリストを取得
+    for filename in os.listdir(WIKI_PATH):
+        if filename.endswith(".md") and filename != "_Sidebar.md":
+            title = filename.replace(".md", "")
+            category = categorize(title, keywords)
+            command_references.append(f"- [[{title}]] ({category})\n")
 
-def generate_index():
-    """INDEX.md を生成"""
-    keywords = load_keywords()
-    command_refs = extract_command_references()
+    # 「コマンドリファレンス」セクションを上書き
+    new_sidebar.append("## コマンドリファレンス\n")
+    if command_references:
+        new_sidebar.extend(command_references)
+    else:
+        new_sidebar.append("コマンドリファレンスが見つかりませんでした。\n")
 
-    with open(INDEX_FILE, "w", encoding="utf-8") as f:
-        f.write("# コマンドリファレンス一覧\n\n")
+    # _Sidebar.md を上書き保存
+    with open(SIDEBAR_FILE, "w", encoding="utf-8") as f:
+        f.writelines(new_sidebar)
 
-        if command_refs:
-            for ref in command_refs:
-                category = categorize(ref, keywords)
-                f.write(f"- [[{ref}]] ({category})\n")
-        else:
-            f.write("コマンドリファレンスが見つかりませんでした。\n")
+    print(f"Updated {SIDEBAR_FILE}")
 
 if __name__ == "__main__":
-    generate_index()
-    print(f"Generated {INDEX_FILE}")
+    update_sidebar()
