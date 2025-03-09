@@ -42,7 +42,7 @@ def generate_index_md(categorized_pages, output_path):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    base_path = os.path.join(script_dir, "myCheatSheet.wiki")
+    base_path = os.path.join(script_dir, "wiki")
     keywords_file = os.path.join(script_dir, "keywords.json")
     index_md_path = os.path.join(base_path, "INDEX.md")
     
