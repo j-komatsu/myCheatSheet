@@ -42,12 +42,17 @@ def generate_index_md(categorized_pages, output_path):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    base_path = os.path.join(script_dir, "wiki")
-    keywords_file = os.path.join(script_dir, "keywords.json")
-    index_md_path = os.path.join(base_path, "INDEX.md")
-    
+    repo_root = os.path.abspath(os.path.join(script_dir, ".."))  # リポジトリのルートを取得
+    wiki_path = os.path.join(repo_root, "wiki")  # wikiフォルダのパス
+    keywords_file = os.path.join(repo_root, "keywords.json")  # JSONファイルのパス
+    index_md_path = os.path.join(wiki_path, "INDEX.md")  # INDEX.mdのパス
+
+    if not os.path.exists(wiki_path):
+        print(f"エラー: 指定されたwikiフォルダが見つかりません: {wiki_path}")
+        return
+
     keywords = load_keywords(keywords_file)
-    categorized_pages = categorize_pages(base_path, keywords)
+    categorized_pages = categorize_pages(wiki_path, keywords)
     generate_index_md(categorized_pages, index_md_path)
     
     print("INDEX.md が更新されました。")
