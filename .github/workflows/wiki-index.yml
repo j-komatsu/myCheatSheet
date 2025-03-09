@@ -1,0 +1,43 @@
+name: Update Wiki Index
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'  # 毎日深夜に実行
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Wiki
+        uses: actions/checkout@v3
+        with:
+          repository: 'j-komatsu/myCheatSheet.wiki'
+          path: 'wiki'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate Index
+        run: python wiki/generate_index.py wiki
+
+      - name: Commit and Push Changes
+        run: |
+          cd wiki
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add INDEX.md
+          git commit -m "Update Wiki Index"
+          git push
+      - name: Debug: Check file location
+        run: |
+          ls -R wiki  # wikiディレクトリ内を確認
+          find . -name "INDEX.md"  # 全体からINDEX.mdを探す

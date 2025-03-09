@@ -1,0 +1,10 @@
+{
+    "Gitコマンド": ["Git", "branch", "commit", "push", "merge", "rebase", "clone", "pull", "fetch"],
+    "Linuxシステム": ["Linux", "shell", "bash", "command", "cron", "chmod", "chown", "grep", "awk", "sed", "systemctl"],
+    "プログラミング": ["Python", "Java", "JavaScript", "コード", "プログラム", "関数", "クラス", "オブジェクト", "ライブラリ", "モジュール"],
+    "データベース": ["SQL", "MySQL", "PostgreSQL", "MongoDB", "データ", "クエリ", "スキーマ", "テーブル", "カラム", "インデックス", "ビュー"],
+    "ネットワーク": ["TCP/IP", "HTTP", "HTTPS", "DNS", "プロトコル", "ポート", "ファイアウォール", "ロードバランサ", "VPN", "Ping"],
+    "クラウド": ["AWS", "Azure", "GCP", "クラウド", "コンテナ", "Kubernetes", "Docker", "Lambda", "EC2", "S3", "CloudFront"],
+    "セキュリティ": ["暗号化", "SSL", "TLS", "ファイアウォール", "認証", "認可", "セキュリティグループ", "IAM", "脆弱性", "ペネトレーションテスト"],
+    "その他": []
+}
