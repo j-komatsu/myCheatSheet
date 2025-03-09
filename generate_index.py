@@ -2,7 +2,7 @@ import os
 import re
 import json
 
-WIKI_PATH = "wiki"
+WIKI_PATH = "myCheatSheet.wiki"  # GitHub Wikiのディレクトリ
 SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
 INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
 KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
@@ -27,13 +27,40 @@ def categorize(title, keywords):
             return category
     return "その他"
 
+def extract_sidebar():
+    """_Sidebar.md の内容を読み込む"""
+    if not os.path.exists(SIDEBAR_FILE):
+        print(f"Error: {SIDEBAR_FILE} が見つかりません")
+        return []
+    with open(SIDEBAR_FILE, "r", encoding="utf-8") as f:
+        return f.readlines()
+
 def update_sidebar(pages):
-    """_Sidebar.md を強制的に書き換え"""
-    sidebar_content = ["# サイドバー\n\n", "## コマンドリファレンス\n"]
-    sidebar_content.extend(pages)
-    
+    """_Sidebar.md の「コマンドリファレンス」セクションを更新"""
+    lines = extract_sidebar()
+    new_sidebar = []
+    inside_section = False
+
+    for line in lines:
+        if "## コマンドリファレンス" in line:  # セクション開始
+            inside_section = True
+            new_sidebar.append(line)
+            continue
+        if inside_section and line.startswith("## "):  # 次のセクションで終了
+            inside_section = False
+        if not inside_section:
+            new_sidebar.append(line)
+
+    # 「コマンドリファレンス」セクションを上書き
+    new_sidebar.append("## コマンドリファレンス\n")
+    if pages:
+        new_sidebar.extend(pages)
+    else:
+        new_sidebar.append("コマンドリファレンスが見つかりませんでした。\n")
+
+    # _Sidebar.md を保存
     with open(SIDEBAR_FILE, "w", encoding="utf-8") as f:
-        f.writelines(sidebar_content)
+        f.writelines(new_sidebar)
 
     print(f"Updated {SIDEBAR_FILE}")
 
