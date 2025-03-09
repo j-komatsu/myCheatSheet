@@ -3,7 +3,6 @@ import re
 import json
 
 WIKI_PATH = "wiki"
-SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
 INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
 KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
 
@@ -21,48 +20,11 @@ def clean_title(title):
 
 def categorize(title, keywords):
     """タイトルをカテゴリに分類"""
-    cleaned_title = clean_title(title)  # 不要な部分を削除
+    cleaned_title = clean_title(title)
     for category, words in keywords.items():
         if any(word.lower() in cleaned_title.lower() for word in words):
             return category
     return "その他"
-
-def extract_sidebar():
-    """_Sidebar.md の内容を読み込む"""
-    if not os.path.exists(SIDEBAR_FILE):
-        print(f"Error: {SIDEBAR_FILE} が見つかりません")
-        return []
-    with open(SIDEBAR_FILE, "r", encoding="utf-8") as f:
-        return f.readlines()
-
-def update_sidebar(pages):
-    """_Sidebar.md の「コマンドリファレンス」セクションを更新"""
-    lines = extract_sidebar()
-    new_sidebar = []
-    inside_section = False
-
-    for line in lines:
-        if "## コマンドリファレンス" in line:  # セクション開始
-            inside_section = True
-            new_sidebar.append(line)
-            continue
-        if inside_section and line.startswith("## "):  # 次のセクションで終了
-            inside_section = False
-        if not inside_section:
-            new_sidebar.append(line)
-
-    # 「コマンドリファレンス」セクションを上書き
-    new_sidebar.append("## コマンドリファレンス\n")
-    if pages:
-        new_sidebar.extend(pages)
-    else:
-        new_sidebar.append("コマンドリファレンスが見つかりませんでした。\n")
-
-    # _Sidebar.md を保存
-    with open(SIDEBAR_FILE, "w", encoding="utf-8") as f:
-        f.writelines(new_sidebar)
-
-    print(f"Updated {SIDEBAR_FILE}")
 
 def update_index(pages):
     """INDEX.md の内容を更新"""
@@ -93,13 +55,12 @@ def main():
 
     # ページ一覧を取得し、カテゴリ分け
     for filename in os.listdir(WIKI_PATH):
-        if filename.endswith(".md") and filename not in ["_Sidebar.md", "INDEX.md"]:
+        if filename.endswith(".md") and filename != "INDEX.md":
             title = filename.replace(".md", "")
             category = categorize(title, keywords)
             pages.append(f"- [[{title}]] ({category})\n")
 
-    update_sidebar(pages)
-    update_index(pages)
+    update_index(pages)  # `INDEX.md` のみ更新
 
 if __name__ == "__main__":
     main()
