@@ -1,78 +1,61 @@
-import os
-import re
 import json
+import os
 
-WIKI_PATH = "wiki"
-SIDEBAR_FILE = os.path.join(WIKI_PATH, "_Sidebar.md")
-INDEX_FILE = os.path.join(WIKI_PATH, "INDEX.md")
-KEYWORDS_FILE = os.path.join(WIKI_PATH, "keywords.json")
-
-def load_keywords():
-    """キーワード辞書の読み込み"""
-    if not os.path.exists(KEYWORDS_FILE):
-        print(f"Error: {KEYWORDS_FILE} が見つかりません")
-        return {}
-    with open(KEYWORDS_FILE, "r", encoding="utf-8") as f:
+# キーワード辞書の読み込み
+def load_keywords(file_path):
+    with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def clean_title(title):
-    """不要なサフィックスを除去（例: `_test`, `_draft`）"""
-    return re.sub(r'[_-](test|draft|backup)$', '', title, flags=re.IGNORECASE)
-
+# カテゴライズ関数
 def categorize(title, keywords):
-    """タイトルをカテゴリに分類"""
-    cleaned_title = clean_title(title)  # 不要な部分を削除
     for category, words in keywords.items():
-        if any(word.lower() in cleaned_title.lower() for word in words):
+        if any(word.lower() in title.lower() for word in words):
             return category
     return "その他"
 
-def update_sidebar(pages):
-    """_Sidebar.md を強制的に書き換え"""
-    sidebar_content = ["# サイドバー\n\n", "## コマンドリファレンス\n"]
-    sidebar_content.extend(pages)
-    
-    with open(SIDEBAR_FILE, "w", encoding="utf-8") as f:
-        f.writelines(sidebar_content)
+# インデックス生成
+def generate_index(base_path, keywords):
+    index = {}
+    output_path = os.path.join(base_path, "INDEX.md")  # 出力先を明確に指定
 
-    print(f"Updated {SIDEBAR_FILE}")
+    # デバッグ出力: ファイル生成場所を確認
+    print(f"Generating INDEX.md at: {output_path}")
 
-def update_index(pages):
-    """INDEX.md の内容を更新"""
-    index_content = ["# INDEX\n"]
-    category_groups = {}
+    # ベースパスが存在するか確認
+    if not os.path.exists(base_path):
+        print(f"Error: Base path does not exist: {base_path}")
+        exit(1)
 
-    for line in pages:
-        match = re.match(r"- \[\[(.+?)\]\] \((.+?)\)", line)
-        if match:
-            title, category = match.groups()
-            if category not in category_groups:
-                category_groups[category] = []
-            category_groups[category].append(f"- [[{title}]]\n")
-
-    for category, links in sorted(category_groups.items()):
-        index_content.append(f"\n## {category}\n")
-        index_content.extend(links)
-
-    # INDEX.md を保存
-    with open(INDEX_FILE, "w", encoding="utf-8") as f:
-        f.writelines(index_content)
-
-    print(f"Updated {INDEX_FILE}")
-
-def main():
-    keywords = load_keywords()
-    pages = []
-
-    # ページ一覧を取得し、カテゴリ分け
-    for filename in os.listdir(WIKI_PATH):
-        if filename.endswith(".md") and filename not in ["_Sidebar.md", "INDEX.md"]:
-            title = filename.replace(".md", "")
+    for file in os.listdir(base_path):
+        if file.endswith(".md"):
+            title = file.replace(".md", "")
             category = categorize(title, keywords)
-            pages.append(f"- [[{title}]] ({category})\n")
+            index.setdefault(category, []).append(title)
 
-    update_sidebar(pages)
-    update_index(pages)
+    with open(output_path, "w", encoding="utf-8") as f:
+        for category, pages in sorted(index.items()):
+            f.write(f"## {category}\n")
+            for page in sorted(pages):
+                f.write(f"- [{page}]({page.replace(' ', '%20')}.md)\n")
 
+# メイン処理（スクリプトのテスト実行用）
 if __name__ == "__main__":
-    main()
+    # 現在のスクリプトディレクトリを取得
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    base_path = script_dir  # 出力先ディレクトリをスクリプト実行ディレクトリに設定
+    keywords_file = os.path.join(script_dir, "keywords.json")  # キーワード辞書ファイルの絶対パス
+
+    # デバッグ出力: 実行ディレクトリと参照するファイルのパスを確認
+    print(f"Script directory: {script_dir}")
+    print(f"Base path: {base_path}")
+    print(f"Keywords file: {keywords_file}")
+
+    # キーワード辞書をロード
+    if not os.path.exists(keywords_file):
+        print(f"Error: Keywords file not found at {keywords_file}")
+        exit(1)
+
+    keywords = load_keywords(keywords_file)
+
+    # インデックス生成
+    generate_index(base_path, keywords)
