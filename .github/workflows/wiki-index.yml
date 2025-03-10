@@ -5,9 +5,10 @@ on:
     branches:
       - master
     paths:
-      - 'wiki/**'
+      - 'wiki/**'  # Wiki フォルダの変更を検出
   schedule:
     - cron: '0 0 * * *'  # 毎日深夜に実行
+  workflow_dispatch:  # 手動実行用
 
 jobs:
   update-index:
@@ -53,7 +54,7 @@ jobs:
       - name: Force Change Detection for INDEX.md
         run: |
           cd wiki
-          touch INDEX.md
+          echo "# Update Trigger $(date)" >> INDEX.md  # 確実に変更を入れる
 
       - name: Debug Git Status
         run: |
