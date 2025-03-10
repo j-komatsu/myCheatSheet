@@ -51,6 +51,11 @@ jobs:
       - name: Generate Index
         run: python generate_index.py wiki
 
+      - name: Force Change Detection for INDEX.md
+        run: |
+          cd wiki
+          touch INDEX.md
+
       - name: Debug Git Status
         run: |
           cd wiki

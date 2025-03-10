@@ -66,6 +66,10 @@ def main():
         print(f"エラー: 指定されたwikiフォルダが見つかりません: {wiki_path}")
         return
 
+    if os.path.exists(index_md_path):
+        print(f"既存の INDEX.md を削除: {index_md_path}")
+        os.remove(index_md_path)
+
     keywords = load_keywords(keywords_file)
     categorized_pages = categorize_pages(wiki_path, keywords)
     generate_index_md(categorized_pages, index_md_path)
