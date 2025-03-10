@@ -48,6 +48,12 @@ def main():
     keywords_file = os.path.join(repo_root, "keywords.json")  # JSONファイルのパス
     index_md_path = os.path.join(wiki_path, "INDEX.md")  # INDEX.mdのパス
 
+    # デバッグ用出力
+    print(f"script_dir: {script_dir}")
+    print(f"repo_root: {repo_root}")
+    print(f"wiki_path: {wiki_path}")
+    print(f"index_md_path: {index_md_path}")
+
     if not os.path.exists(wiki_path):
         print(f"エラー: 指定されたwikiフォルダが見つかりません: {wiki_path}")
         return
@@ -55,8 +61,16 @@ def main():
     keywords = load_keywords(keywords_file)
     categorized_pages = categorize_pages(wiki_path, keywords)
     generate_index_md(categorized_pages, index_md_path)
+
+    # `INDEX.md` の確認
+    if os.path.exists(index_md_path):
+        print(f"INDEX.md の生成に成功: {index_md_path}")
+        os.system(f"ls -l {index_md_path}")
+    else:
+        print("エラー: INDEX.md が生成されていません")
     
     print("INDEX.md が更新されました。")
 
 if __name__ == "__main__":
     main()
+

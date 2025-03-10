@@ -23,6 +23,9 @@ jobs:
           repository: 'j-komatsu/myCheatSheet.wiki'
           path: 'wiki'
 
+      - name: Debug Directory Structure
+        run: ls -R
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -38,6 +41,12 @@ jobs:
 
       - name: Generate Index
         run: python generate_index.py wiki
+
+      - name: Check Git Status (Debug)
+        run: |
+          cd wiki
+          git status
+          git diff INDEX.md || echo "No differences found"
 
       - name: Commit and Push Changes
         env:
@@ -55,4 +64,3 @@ jobs:
             git push origin HEAD
           else
             echo "No changes to commit"
-          fi
