@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository (Main)
-        uses: actions/checkout@v4
-
       - name: Checkout Wiki Repository
         uses: actions/checkout@v4
         with:
@@ -32,8 +29,8 @@ jobs:
             git checkout master || git checkout -b master
           fi
 
-      - name: Debug Directory Structure
-        run: ls -R
+      - name: Debug Wiki Directory
+        run: ls -l wiki/
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -42,14 +39,14 @@ jobs:
 
       - name: Install Dependencies (if any)
         run: |
-          if [ -s requirements.txt ]; then 
-            pip install -r requirements.txt
+          if [ -s wiki/requirements.txt ]; then 
+            pip install -r wiki/requirements.txt
           else 
             echo "No dependencies to install"
           fi
 
       - name: Generate Index
-        run: python generate_index.py wiki
+        run: python wiki/generate_index.py
 
       - name: Force Change Detection for INDEX.md
         run: |
@@ -61,6 +58,7 @@ jobs:
           cd wiki
           git status
           git diff INDEX.md || echo "No differences found"
+          git log --oneline -5
 
       - name: Commit and Push Changes
         env:
