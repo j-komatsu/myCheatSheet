@@ -7,7 +7,7 @@
 
 すべてのチートシートや用語集は、GitHub Wikiにまとめられています。以下のリンクからアクセスしてください：
 
-👉 **[Wikiページ](https://github.com/j-komatsu/myCheatSheet/wiki)**
+👉 **[Wikiページ](https://github.com/j-komatsu/myCheatSheet/wiki/INDEX)**
 
 ## 主なコンテンツ
 
