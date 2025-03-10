@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'wiki/**'  # Wiki フォルダの変更を検出
+      - 'j-komatsu/myCheatSheet.wiki/**'  # Wiki フォルダの変更を検出
   schedule:
     - cron: '0 0 * * *'  # 毎日深夜に実行
   workflow_dispatch:  # 手動実行用
