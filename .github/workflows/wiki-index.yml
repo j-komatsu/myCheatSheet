@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout Wiki
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'j-komatsu/myCheatSheet'
           path: 'wiki'
@@ -26,12 +26,13 @@ jobs:
       - name: Install Dependencies (if any)
         run: |
           if [ -s requirements.txt ]; then 
-            pip install -r main/requirements.txt
+            pip install -r requirements.txt
           else 
             echo "No dependencies to install"
           fi
+
       - name: Generate Index
-        run: python main/generate_index.py wiki
+        run: python generate_index.py wiki
 
       - name: Commit and Push Changes
         env:
