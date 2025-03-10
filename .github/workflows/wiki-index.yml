@@ -13,9 +13,9 @@ jobs:
 
     steps:
       - name: Checkout Wiki
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
-          repository: 'j-komatsu/myCheatSheet'
+          repository: 'j-komatsu/myCheatSheet.wiki'
           path: 'wiki'
 
       - name: Set up Python
@@ -32,7 +32,7 @@ jobs:
           fi
 
       - name: Generate Index
-        run: python generate_index.py wiki
+        run: python wiki/generate_index.py wiki
 
       - name: Commit and Push Changes
         env:
