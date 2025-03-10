@@ -14,14 +14,23 @@ jobs:
     steps:
       - name: Checkout Repository (Main)
         uses: actions/checkout@v4
-        with:
-          repository: 'j-komatsu/myCheatSheet'
 
       - name: Checkout Wiki Repository
         uses: actions/checkout@v4
         with:
           repository: 'j-komatsu/myCheatSheet.wiki'
           path: 'wiki'
+
+      - name: Ensure Wiki Repo is Initialized
+        run: |
+          cd wiki
+          if [ ! -d ".git" ]; then
+            echo "Initializing Git repository in wiki/"
+            git init
+            git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/j-komatsu/myCheatSheet.wiki.git
+            git fetch
+            git checkout master || git checkout -b master
+          fi
 
       - name: Debug Directory Structure
         run: ls -R
@@ -42,7 +51,7 @@ jobs:
       - name: Generate Index
         run: python generate_index.py wiki
 
-      - name: Check Git Status (Debug)
+      - name: Debug Git Status
         run: |
           cd wiki
           git status
@@ -64,4 +73,4 @@ jobs:
             git push origin HEAD
           else
             echo "No changes to commit"
-          fi  # Å© Ç±Ç±Ç… fi Çí«â¡
+          fi

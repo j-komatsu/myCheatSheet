@@ -32,6 +32,12 @@ def categorize_pages(base_path, keywords):
 
 def generate_index_md(categorized_pages, output_path):
     """INDEX.md を生成する"""
+
+    # 既存の INDEX.md を削除
+    if os.path.exists(output_path):
+        print(f"既存の INDEX.md を削除: {output_path}")
+        os.remove(output_path)
+
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("# INDEX\n\n")
         for category, pages in categorized_pages.items():
@@ -40,6 +46,8 @@ def generate_index_md(categorized_pages, output_path):
                 for page in sorted(pages):
                     f.write(f"- [{page}]({page.replace(' ', '%20')})\n")
                 f.write("\n")
+
+    print(f"INDEX.md の生成完了: {output_path}")
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -66,11 +74,11 @@ def main():
     if os.path.exists(index_md_path):
         print(f"INDEX.md の生成に成功: {index_md_path}")
         os.system(f"ls -l {index_md_path}")
+        os.system(f"cat {index_md_path}")  # ファイルの中身を出力
     else:
         print("エラー: INDEX.md が生成されていません")
-    
-    print("INDEX.md が更新されました。")
+
+    print("INDEX.md の更新が完了しました。")
 
 if __name__ == "__main__":
     main()
-
