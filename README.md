@@ -21,6 +21,10 @@
 - **IT技術とデジタル**（IT・デジタル用語集）
 - **CI/CDと自動化**（Jenkins）
 
+## 動画（mp4）について
+
+NotebookLM などで作成した解説動画は [`videos/`](videos/README.md) 配下にカテゴリ別（Git LFS管理）で整理しています。追加方法やブラウザでの再生方法は [videos/README.md](videos/README.md) を参照してください。
+
 ## このリポジトリの目的
 
 - 日々の作業効率を向上させる
